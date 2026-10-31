@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getTemplate } from "@/lib/templates";
 
 const BUCKET = "menu-images";
 
@@ -168,6 +169,7 @@ export async function saveSettings(formData: FormData) {
       address: text(formData, "address"),
       opening_hours: text(formData, "opening_hours"),
       theme_color: text(formData, "theme_color") ?? "#ea580c",
+      template: getTemplate(text(formData, "template")).id,
       logo_url,
       updated_at: new Date().toISOString(),
     })

@@ -3,6 +3,7 @@
 Menu digital untuk satu kedai makan / kafe. Pelanggan tap NFC tag (atau imbas QR) pada stand → menu terus terbuka di telefon.
 
 - **Menu awam** (`/`): mesra telefon, carian, kategori melekit, tanda *Popular* & *Habis*, nombor meja dari `?meja=5`.
+- **4 template UI** boleh dipilih di *Tetapan kedai*: **Klasik**, **Kafe** (kad bergambar), **Premium** (gelap & serif), **Warung** (tebal & terang).
 - **Dashboard admin** (`/admin`): tambah/edit item & gambar, kategori, tetapan kedai (logo, warna, waktu operasi), dan pautan + QR untuk NFC setiap meja.
 - **Teknologi:** Next.js 15, Tailwind CSS 4, Supabase (Postgres, Auth, Storage).
 
@@ -17,6 +18,8 @@ Menu digital untuk satu kedai makan / kafe. Pelanggan tap NFC tag (atau imbas QR
    insert into public.admins (user_id) values ('PASTE-USER-UID-DI-SINI');
    ```
 6. **Authentication → Sign In / Providers**: matikan *Allow new users to sign up* supaya orang lain tak boleh daftar.
+
+> **Dah jalankan schema.sql versi lama?** Jalankan semula `supabase/schema.sql`. Ia selamat dijalankan berulang kali dan akan menambah lajur `template` tanpa memadam data.
 
 ## 2. Jalankan di komputer
 
@@ -51,6 +54,8 @@ Tag disyorkan: **NTAG213** (cukup untuk satu URL). Jika stand logam, guna tag *a
 
 ```
 app/page.tsx                 Menu awam (statik, dikemas kini bila admin simpan)
+app/menu-templates.css       Gaya setiap template (Klasik, Kafe, Premium, Warung)
+lib/templates.ts             Senarai template yang boleh dipilih
 app/admin/actions.ts         Semua server actions (simpan, padam, muat naik)
 app/admin/(dashboard)/       Halaman admin: menu, kategori, tetapan, NFC & QR
 components/MenuView.tsx      UI menu pelanggan

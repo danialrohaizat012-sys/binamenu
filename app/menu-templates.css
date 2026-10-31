@@ -1,0 +1,307 @@
+/* =========================================================
+   Template UI menu pelanggan.
+   Asas (klasik) dahulu, kemudian override per data-template.
+   --brand datang dari "Warna tema" dalam tetapan kedai.
+   ========================================================= */
+
+.m-root {
+  --bg: #ffffff;
+  --fg: #1c1917;
+  --muted: #78716c;
+  --line: #f0eeec;
+  --soft: #f5f5f4;
+  --radius: 14px;
+  --font-body: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-body);
+  min-height: 100dvh;
+  max-width: 36rem;
+  margin: 0 auto;
+  padding-bottom: 4rem;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+}
+
+/* Warna di luar lajur menu (skrin tablet / desktop) */
+body:has(.m-root) { background: #f5f5f4; }
+body:has([data-template="kafe"]) { background: #efe6db; }
+body:has([data-template="premium"]) { background: #0a0909; }
+body:has([data-template="warung"]) { background: #fef3c7; }
+
+/* ---------- Header ---------- */
+.m-hero {
+  padding: 2rem 1.25rem 1.25rem;
+  text-align: center;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--brand) 12%, transparent), transparent);
+}
+.m-logo {
+  width: 5rem;
+  height: 5rem;
+  margin: 0 auto 0.75rem;
+  border-radius: 999px;
+  object-fit: cover;
+  box-shadow: 0 0 0 4px var(--bg), 0 4px 14px rgb(0 0 0 / 0.12);
+}
+.m-logo-text {
+  display: grid;
+  place-items: center;
+  background: var(--brand);
+  color: #fff;
+  font: 800 1.9rem/1 var(--font-display);
+}
+.m-title {
+  font: 700 1.6rem/1.15 var(--font-display);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.m-tagline { margin-top: 0.25rem; color: var(--muted); }
+.m-hours { margin-top: 0.5rem; font-size: 0.75rem; color: var(--muted); }
+.m-hours::before { content: "🕒 "; }
+.m-table {
+  display: inline-block;
+  margin-top: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background: var(--brand);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+/* ---------- Carian & kategori ---------- */
+.m-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding-top: 0.75rem;
+  background: color-mix(in srgb, var(--bg) 94%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+.m-search {
+  display: block;
+  width: calc(100% - 2rem);
+  margin: 0 1rem;
+  padding: 0.65rem 1rem;
+  border: 0;
+  border-radius: 0.75rem;
+  background: var(--soft);
+  color: var(--fg);
+  font-size: 16px;
+  outline: none;
+}
+.m-search:focus { box-shadow: 0 0 0 2px var(--brand); }
+.m-chips { display: flex; gap: 0.5rem; overflow-x: auto; padding: 0.75rem 1rem; }
+.m-chip {
+  flex: none;
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  background: var(--soft);
+  color: var(--fg);
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: background 0.15s, color 0.15s;
+}
+.m-chip[data-active] { background: var(--brand); color: #fff; }
+
+/* ---------- Senarai item ---------- */
+.m-main { padding: 0 1rem; }
+.m-empty { padding: 4rem 0; text-align: center; color: var(--muted); }
+.m-section { padding-top: 1.5rem; scroll-margin-top: 8rem; }
+.m-cat { margin-bottom: 0.5rem; font: 700 1.15rem/1.3 var(--font-display); }
+.m-items > li + li { border-top: 1px solid var(--line); }
+.m-item {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.85rem 0;
+  text-align: left;
+}
+.m-item[data-off] { opacity: 0.5; }
+.m-img { width: 6rem; height: 6rem; flex: none; border-radius: var(--radius); object-fit: cover; }
+.m-img-empty { display: none; }
+.m-body { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.m-top { display: contents; }
+.m-name { order: 1; font-weight: 650; line-height: 1.3; }
+.m-leader { display: none; }
+.m-badges { order: 2; display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.3rem; }
+.m-desc {
+  order: 3;
+  margin-top: 0.2rem;
+  color: var(--muted);
+  font-size: 0.875rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.m-price { order: 4; margin-top: 0.4rem; white-space: nowrap; color: var(--brand); font-weight: 700; font-variant-numeric: tabular-nums; }
+.m-badge { padding: 0.1rem 0.4rem; border-radius: 0.35rem; font-size: 0.7rem; font-weight: 700; }
+.m-badge-pop { background: #fef3c7; color: #92400e; }
+.m-badge-off { background: #e7e5e4; color: #44403c; }
+
+/* ---------- Footer ---------- */
+.m-foot { margin-top: 2.5rem; padding: 0 1.25rem; text-align: center; font-size: 0.75rem; color: var(--muted); }
+.m-foot a { text-decoration: underline; }
+.m-foot p + p { margin-top: 0.25rem; }
+.m-foot-note { margin-top: 0.75rem !important; }
+
+/* ---------- Butiran item (bottom sheet) ---------- */
+.m-sheet-bg { position: fixed; inset: 0; z-index: 20; display: flex; align-items: flex-end; justify-content: center; background: rgb(0 0 0 / 0.45); }
+.m-sheet { width: 100%; max-width: 36rem; overflow: hidden; border-radius: 1.5rem 1.5rem 0 0; background: var(--bg); color: var(--fg); padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px)); }
+.m-sheet-img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.m-sheet-body { padding: 1.25rem 1.25rem 0; }
+.m-sheet-top { display: flex; align-items: baseline; justify-content: space-between; gap: 0.75rem; }
+.m-sheet-top h3 { font: 700 1.3rem/1.25 var(--font-display); }
+.m-sheet-top .m-price { margin: 0; font-size: 1.15rem; flex: none; }
+.m-sheet-desc { margin-top: 0.5rem; color: var(--muted); }
+.m-sheet-off { margin-top: 0.75rem; font-weight: 600; color: var(--muted); }
+.m-sheet-close { width: 100%; margin-top: 1.5rem; padding: 0.8rem; border-radius: 0.75rem; background: var(--soft); font-weight: 700; }
+@media (prefers-reduced-motion: no-preference) {
+  .m-sheet { animation: m-up 0.22s ease-out; }
+  @keyframes m-up { from { transform: translateY(2.5rem); opacity: 0.6; } }
+}
+
+/* =========================================================
+   KAFE: kad bergambar dua lajur, huruf serif lembut
+   ========================================================= */
+[data-template="kafe"] {
+  --bg: #fbf7f2;
+  --fg: #2b2018;
+  --muted: #86705f;
+  --line: #eadfd2;
+  --soft: #f1e8dd;
+  --radius: 1.1rem;
+  --font-display: "Fraunces", Georgia, serif;
+}
+[data-template="kafe"] .m-hero { padding-top: 2.5rem; background: none; }
+[data-template="kafe"] .m-title { font-weight: 600; font-size: 1.9rem; }
+[data-template="kafe"] .m-tagline { font-style: italic; }
+[data-template="kafe"] .m-chip { background: transparent; box-shadow: inset 0 0 0 1px var(--line); }
+[data-template="kafe"] .m-chip[data-active] { background: var(--fg); color: var(--bg); box-shadow: none; }
+[data-template="kafe"] .m-cat { font-size: 1.35rem; font-weight: 600; margin-bottom: 0.85rem; }
+[data-template="kafe"] .m-items { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.85rem; }
+[data-template="kafe"] .m-items > li + li { border: 0; }
+[data-template="kafe"] .m-item {
+  flex-direction: column;
+  height: 100%;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: #fff;
+  box-shadow: 0 1px 2px rgb(60 30 10 / 0.06), 0 6px 18px -10px rgb(60 30 10 / 0.25);
+}
+[data-template="kafe"] .m-img { width: 100%; height: auto; aspect-ratio: 1; border-radius: 0; }
+[data-template="kafe"] .m-img-empty {
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--brand) 14%, var(--soft));
+  color: var(--brand);
+  font: 600 2.4rem/1 var(--font-display);
+}
+[data-template="kafe"] .m-body { padding: 0.7rem 0.8rem 0.85rem; flex: 1; }
+[data-template="kafe"] .m-name { font: 600 0.98rem/1.25 var(--font-display); }
+[data-template="kafe"] .m-desc { font-size: 0.78rem; }
+[data-template="kafe"] .m-price { margin-top: auto; padding-top: 0.45rem; color: var(--fg); }
+[data-template="kafe"] .m-badge-pop { background: var(--brand); color: #fff; }
+
+/* =========================================================
+   PREMIUM: gelap, serif, harga dengan garis titik
+   ========================================================= */
+[data-template="premium"] {
+  --bg: #121110;
+  --fg: #f2ece2;
+  --muted: #a39a8c;
+  --line: #2a2724;
+  --soft: #1f1d1b;
+  --font-display: "Playfair Display", Georgia, serif;
+}
+[data-template="premium"] .m-hero { padding: 3rem 1.25rem 2rem; background: none; }
+[data-template="premium"] .m-logo { box-shadow: 0 0 0 1px var(--brand); }
+[data-template="premium"] .m-logo-text { background: transparent; color: var(--brand); font-weight: 600; }
+[data-template="premium"] .m-title { font-size: 2.1rem; font-weight: 600; letter-spacing: 0.01em; }
+[data-template="premium"] .m-tagline {
+  margin-top: 0.6rem;
+  color: var(--brand);
+  font-size: 0.72rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+}
+[data-template="premium"] .m-hours::before { content: ""; }
+[data-template="premium"] .m-table { background: transparent; color: var(--brand); box-shadow: inset 0 0 0 1px var(--brand); }
+[data-template="premium"] .m-chip { background: transparent; color: var(--muted); border-radius: 0; padding-inline: 0.5rem; letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.75rem; }
+[data-template="premium"] .m-chip[data-active] { background: transparent; color: var(--brand); box-shadow: inset 0 -2px 0 var(--brand); }
+[data-template="premium"] .m-section { padding-top: 2.25rem; }
+[data-template="premium"] .m-cat {
+  margin-bottom: 0.75rem;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 500;
+  font-style: italic;
+  color: var(--brand);
+}
+[data-template="premium"] .m-items > li + li { border: 0; }
+[data-template="premium"] .m-item { flex-direction: row; align-items: flex-start; padding: 0.7rem 0; }
+[data-template="premium"] .m-img { width: 3.5rem; height: 3.5rem; border-radius: 999px; }
+[data-template="premium"] .m-top { display: flex; align-items: baseline; gap: 0.5rem; }
+[data-template="premium"] .m-top > * { order: 0; }
+[data-template="premium"] .m-name { min-width: 0; font: 500 1.08rem/1.3 var(--font-display); }
+[data-template="premium"] .m-leader { display: block; flex: 1; min-width: 1rem; border-bottom: 1px dotted var(--muted); transform: translateY(-0.3rem); }
+[data-template="premium"] .m-price { margin: 0; color: var(--fg); font-weight: 500; font-family: var(--font-display); }
+[data-template="premium"] .m-desc { font-size: 0.82rem; font-style: italic; }
+[data-template="premium"] .m-badge { background: transparent; padding: 0; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.65rem; }
+[data-template="premium"] .m-badge-pop { color: var(--brand); }
+[data-template="premium"] .m-badge-off { color: var(--muted); }
+[data-template="premium"] .m-sheet { box-shadow: 0 -1px 0 var(--line); }
+
+/* =========================================================
+   WARUNG: tebal, besar, warna terang
+   ========================================================= */
+[data-template="warung"] {
+  --bg: #fffdf7;
+  --fg: #111111;
+  --muted: #57534e;
+  --line: #111111;
+  --soft: #ffffff;
+  --radius: 0.75rem;
+  --font-body: "Poppins", ui-sans-serif, system-ui, sans-serif;
+}
+[data-template="warung"] .m-hero { padding: 2rem 1.25rem 1.75rem; background: var(--brand); color: #fff; border-bottom: 3px solid var(--line); }
+[data-template="warung"] .m-logo { box-shadow: 0 0 0 3px #fff; }
+[data-template="warung"] .m-logo-text { background: #fff; color: var(--brand); }
+[data-template="warung"] .m-title { font-size: 2rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0; }
+[data-template="warung"] .m-tagline,
+[data-template="warung"] .m-hours { color: rgb(255 255 255 / 0.9); }
+[data-template="warung"] .m-table { background: #fde047; color: #111; border: 2px solid var(--line); }
+[data-template="warung"] .m-bar { border-bottom: 3px solid var(--line); }
+[data-template="warung"] .m-search { border: 2px solid var(--line); }
+[data-template="warung"] .m-chip { background: #fff; border: 2px solid var(--line); font-weight: 700; }
+[data-template="warung"] .m-chip[data-active] { background: #fde047; color: #111; }
+[data-template="warung"] .m-cat { font-size: 1.35rem; font-weight: 800; text-transform: uppercase; }
+[data-template="warung"] .m-items { display: grid; gap: 0.75rem; }
+[data-template="warung"] .m-items > li + li { border: 0; }
+[data-template="warung"] .m-item {
+  padding: 0.75rem;
+  align-items: center;
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+  box-shadow: 3px 3px 0 var(--line);
+}
+[data-template="warung"] .m-img { width: 5rem; height: 5rem; border-radius: 0.5rem; border: 2px solid var(--line); }
+[data-template="warung"] .m-name { font-size: 1.05rem; font-weight: 700; }
+[data-template="warung"] .m-price {
+  align-self: flex-start;
+  padding: 0.1rem 0.55rem;
+  border-radius: 0.4rem;
+  background: var(--brand);
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+[data-template="warung"] .m-badge-pop { background: #fde047; color: #111; }
+[data-template="warung"] .m-sheet { border-top: 3px solid var(--line); }
+[data-template="warung"] .m-sheet-top .m-price { color: #fff; }
+[data-template="warung"] .m-sheet-close { border: 2px solid var(--line); background: #fde047; }

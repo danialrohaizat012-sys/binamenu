@@ -1,5 +1,6 @@
 import Notice from "@/components/Notice";
 import { createClient } from "@/lib/supabase/server";
+import { TEMPLATES } from "@/lib/templates";
 import type { Settings } from "@/lib/types";
 import { saveSettings } from "../../actions";
 
@@ -41,9 +42,32 @@ export default async function SettingsPage({
           Alamat
           <input name="address" defaultValue={s.address ?? ""} className="input mt-1" />
         </label>
+        <fieldset>
+          <legend className="text-sm font-medium">Template paparan menu</legend>
+          <div className="mt-2 grid gap-3 sm:grid-cols-2">
+            {TEMPLATES.map((t) => (
+              <label
+                key={t.id}
+                className="flex cursor-pointer gap-3 rounded-xl border border-stone-200 p-3 has-[:checked]:border-orange-500 has-[:checked]:ring-2 has-[:checked]:ring-orange-200"
+              >
+                <input type="radio" name="template" value={t.id} defaultChecked={s.template === t.id} className="mt-1" />
+                <span>
+                  <span className="flex items-center gap-2 font-semibold">
+                    <span className="h-3 w-3 rounded-full" style={{ background: t.defaultColor }} />
+                    {t.name}
+                  </span>
+                  <span className="mt-0.5 block text-xs text-stone-500">{t.description}</span>
+                </span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
         <label className="block text-sm font-medium">
           Warna tema
           <input name="theme_color" type="color" defaultValue={s.theme_color} className="mt-1 block h-10 w-20 rounded" />
+          <span className="mt-1 block text-xs font-normal text-stone-500">
+            Digunakan untuk harga, butang dan kategori aktif. Cadangan: Klasik oren, Kafe coklat, Premium emas, Warung merah.
+          </span>
         </label>
         <div className="text-sm font-medium">
           Logo

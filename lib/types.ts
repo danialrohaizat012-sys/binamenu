@@ -7,6 +7,7 @@ export type Settings = {
   address: string | null;
   opening_hours: string | null;
   theme_color: string;
+  template: string;
 };
 
 export type Category = {

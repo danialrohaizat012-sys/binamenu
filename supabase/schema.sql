@@ -13,9 +13,16 @@ create table if not exists public.settings (
   address      text,
   opening_hours text,
   theme_color  text not null default '#ea580c',
+  template     text not null default 'klasik',
   updated_at   timestamptz not null default now()
 );
 insert into public.settings (id) values (1) on conflict (id) do nothing;
+
+-- Untuk projek yang dicipta sebelum template UI ditambah
+alter table public.settings add column if not exists template text not null default 'klasik';
+alter table public.settings drop constraint if exists settings_template_check;
+alter table public.settings add constraint settings_template_check
+  check (template in ('klasik', 'kafe', 'premium', 'warung'));
 
 create table if not exists public.categories (
   id         uuid primary key default gen_random_uuid(),
