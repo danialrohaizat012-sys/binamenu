@@ -21,7 +21,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <div className="min-h-dvh">
-      <header className="border-b border-stone-200 bg-white">
+      <header className="border-b border-stone-200 bg-white print:hidden">
         <div className="mx-auto flex max-w-4xl flex-wrap items-center gap-x-5 gap-y-2 px-4 py-3">
           <span className="font-bold">Admin Menu</span>
           <nav className="flex flex-wrap gap-4 text-sm">
@@ -39,7 +39,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           </form>
         </div>
       </header>
-      <main className="mx-auto max-w-4xl px-4 py-6">
+      <main className="mx-auto max-w-4xl px-4 py-6 print:max-w-none print:p-0">
         {admin ? (
           children
         ) : (

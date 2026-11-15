@@ -48,6 +48,14 @@ Buka <http://localhost:3000> (menu) dan <http://localhost:3000/admin> (dashboard
 3. Disyorkan: *Other → Lock tag* selepas siap, supaya tag tak boleh ditulis semula oleh orang lain.
 4. Cetak QR dari halaman yang sama dan tampal pada stand sebagai backup.
 
+### Sticker bulat 3 inci
+
+Di halaman **NFC & QR**:
+- **Muat turun sticker** (setiap meja): fail SVG dengan bleed 3mm untuk dihantar ke kedai cetak. Minta potong bulat **76.2mm**.
+- **Cetak semua sticker 3"**: helaian A4 (6 sticker sehelai) untuk cetak sendiri. Pilih skala **100% / Actual size** dan potong ikut garis putus-putus.
+
+Tampal NFC tag di belakang sticker, tepat di tengah (di belakang QR).
+
 Tag disyorkan: **NTAG213** (cukup untuk satu URL). Jika stand logam, guna tag *anti-metal*.
 
 ## Struktur
@@ -55,6 +63,7 @@ Tag disyorkan: **NTAG213** (cukup untuk satu URL). Jika stand logam, guna tag *a
 ```
 app/page.tsx                 Menu awam (statik, dikemas kini bila admin simpan)
 app/menu-templates.css       Gaya setiap template (Klasik, Kafe, Premium, Warung)
+lib/sticker.ts               Design sticker bulat 3 inci (NFC + QR + nombor meja)
 lib/templates.ts             Senarai template yang boleh dipilih
 app/admin/actions.ts         Semua server actions (simpan, padam, muat naik)
 app/admin/(dashboard)/       Halaman admin: menu, kategori, tetapan, NFC & QR
