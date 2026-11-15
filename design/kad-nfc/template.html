@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<title>Kad NFC BinaMenu</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&family=Poppins:wght@500;600;800&display=swap">
+<style>
+  /* Kad CR80 85.6 x 54mm + bleed 3mm setiap sisi = 91.6 x 60mm.
+     Kandungan penting kekal 3mm di dalam garis potong (zon selamat). */
+  :root {
+    --orange: #EA580C;
+    --orange-deep: #C2410C;
+    --orange-soft: #FB923C;
+    --ink: #1C1410;
+    --cream: #FFF6EF;
+    --muted: #7C6A5E;
+  }
+  @page { size: 91.6mm 60mm; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #d6d3d1; font-family: "Plus Jakarta Sans", Arial, sans-serif; color: var(--ink); }
+  .side {
+    position: relative; width: 91.6mm; height: 60mm; overflow: hidden;
+    break-after: page; -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  .side:last-child { break-after: auto; }
+  @media screen { body { padding: 8mm; display: grid; gap: 8mm; } .side { box-shadow: 0 2mm 6mm rgb(0 0 0 / .2); } }
+
+  /* ---------- DEPAN: yang pelanggan nampak ---------- */
+  #depan { background: var(--cream); }
+  .panel {
+    position: absolute; top: 0; right: 0; width: 34.6mm; height: 60mm;
+    background: var(--orange); border-radius: 7mm 0 0 7mm;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.6mm;
+    padding-right: 3mm; /* bleed kanan */
+  }
+  .qr { width: 25mm; height: 25mm; padding: 1.8mm; background: #fff; border-radius: 2.6mm; }
+  .qr svg { display: block; width: 100%; height: 100%; }
+  .panel p { color: #fff; font: 600 2.1mm/1 "Plus Jakarta Sans", Arial, sans-serif; letter-spacing: .08mm; }
+
+  .left { position: absolute; left: 9mm; top: 8.6mm; width: 46mm; height: 42.4mm; display: flex; flex-direction: column; }
+  .shop { color: var(--orange); font: 700 2.2mm/1 "Plus Jakarta Sans", Arial, sans-serif; letter-spacing: .35mm; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  h1 { margin-top: 2.4mm; font: 800 8.6mm/0.98 "Poppins", Arial, sans-serif; letter-spacing: -.25mm; }
+  h1 span { color: var(--orange); }
+  .hint { margin-top: 2.2mm; display: flex; align-items: center; gap: 1.4mm; color: var(--muted); font-size: 2.05mm; font-weight: 500; }
+  .hint svg { width: 4.2mm; height: 4.2mm; flex: none; }
+  .meja {
+    margin-top: 2.6mm; align-self: flex-start; padding: 1mm 2.8mm; border-radius: 99mm;
+    background: var(--ink); color: #fff; font: 600 2.7mm/1 "Poppins", Arial, sans-serif; letter-spacing: .3mm;
+  }
+  .powered { margin-top: auto; display: flex; align-items: center; gap: 1.2mm; color: var(--muted); font-size: 1.75mm; font-weight: 500; }
+  .powered svg { width: 3.6mm; height: 3.6mm; }
+  .powered b { color: var(--ink); font: 600 2mm/1 "Poppins", Arial, sans-serif; }
+
+  /* ---------- BELAKANG: branding BinaMenu ---------- */
+  #belakang { background: var(--orange); color: #fff; }
+  .waves { position: absolute; left: 23mm; top: 50%; width: 70mm; height: 70mm; transform: translateY(-50%); }
+  .brand { position: absolute; left: 9mm; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 2.6mm; }
+  .tile { width: 13mm; height: 13mm; padding: .9mm; background: #fff; border-radius: 3.6mm; }
+  .tile svg { display: block; width: 100%; height: 100%; }
+  .word { font: 800 8.4mm/1 "Poppins", Arial, sans-serif; letter-spacing: -.3mm; }
+  .word span { font-weight: 500; }
+  .tag { color: var(--cream); font-size: 2.5mm; font-weight: 600; letter-spacing: .05mm; }
+  .chip-note { position: absolute; left: 9mm; bottom: 7mm; color: #FFE4D2; font-size: 1.8mm; font-weight: 500; letter-spacing: .2mm; text-transform: uppercase; }
+</style>
+</head>
+<body>
+
+<section class="side" id="depan">
+  <div class="left">
+    <p class="shop">{{NAME}}</p>
+    <h1>Tap untuk<br><span>menu.</span></h1>
+    <p class="hint">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#7C6A5E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="10" height="18" rx="2.2"/><path d="M7 18h2"/>
+        <path d="M16.5 9a4.5 4.5 0 0 1 0 6M19.5 6.5a8 8 0 0 1 0 11"/>
+      </svg>
+      Dekatkan telefon pada kad ini
+    </p>
+    <p class="meja">{{MEJA}}</p>
+    <p class="powered">{{MARK}} Dikuasakan oleh <b>BinaMenu</b></p>
+  </div>
+  <div class="panel">
+    <div class="qr">{{QR}}</div>
+    <p>atau imbas QR</p>
+  </div>
+</section>
+
+<section class="side" id="belakang">
+  <svg class="waves" viewBox="0 0 100 100" fill="none" stroke-linecap="round">
+    <path d="M50 34a16 16 0 0 1 0 32" stroke="#F97316" stroke-width="5"/>
+    <path d="M50 15a35 35 0 0 1 0 70" stroke="#F97316" stroke-width="5"/>
+    <path d="M50 0a50 50 0 0 1 0 100" stroke="#F97316" stroke-width="5"/>
+  </svg>
+  <div class="brand">
+    <div class="tile">{{MARK}}</div>
+    <p class="word"><span>Bina</span>Menu</p>
+    <p class="tag">Menu digital. Tap &amp; terus lihat.</p>
+  </div>
+  <p class="chip-note">NFC · QR · Tanpa app</p>
+</section>
+
+</body>
+</html>
