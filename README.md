@@ -7,6 +7,8 @@ Menu digital untuk satu kedai makan / kafe. Pelanggan tap NFC tag (atau imbas QR
 - **Dashboard admin** (`/admin`): tambah/edit item & gambar, kategori, tetapan kedai (logo, warna, waktu operasi), dan pautan + QR untuk NFC setiap meja.
 - **Teknologi:** Next.js 15, Tailwind CSS 4, Supabase (Postgres, Auth, Storage).
 
+Website jualan (binamenu.binalab.my) berada dalam repo berasingan: [`websitebinamenu`](https://github.com/danialrohaizat012-sys/websitebinamenu).
+
 ## 1. Sediakan Supabase (satu projek untuk semua outlet)
 
 1. Daftar di <https://supabase.com> → **New project** (region **Singapore**).
