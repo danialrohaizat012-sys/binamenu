@@ -214,6 +214,8 @@ details p { padding-bottom: 18px; color: var(--muted) }
 .contact li::before { content: "✓"; color: #7fe0b5; margin-right: 8px; font-weight: 700 }
 footer { padding-block: 28px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px }
 footer .wrap { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between }
+footer .owner-link { color: var(--navy); font-weight: 600; text-decoration: underline; text-underline-offset: 3px }
+footer .owner-link:hover { color: var(--green-deep) }
 </style>
 </head>
 <body>
@@ -517,7 +519,10 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space
 </section>
 
 <footer>
-  <div class="wrap"><span>© 2026 BinaLab · Bina Menu</span><span>binamenu.binalab.my</span></div>
+  <div class="wrap">
+    <span>© 2026 Bina Menu · Dimiliki oleh <a href="https://binalab.my" target="_blank" rel="noopener" class="owner-link">BinaLab</a> (ROI Resources)</span>
+    <span>binamenu.binalab.my</span>
+  </div>
 </footer>
 
 <script>
