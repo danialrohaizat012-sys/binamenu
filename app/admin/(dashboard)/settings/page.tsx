@@ -11,13 +11,22 @@ export default async function SettingsPage({
 }) {
   const { error, saved } = await searchParams;
   const supabase = await createClient();
-  const { data } = await supabase.from("settings").select("*").eq("id", 1).single();
+  const [{ data }, { data: sub }] = await Promise.all([
+    supabase.from("settings").select("*").eq("id", 1).single(),
+    supabase.from("subscription").select("plan").eq("id", 1).maybeSingle(),
+  ]);
   const s = data as Settings;
+  const plan = (sub?.plan as string | undefined) ?? "lite";
 
   return (
     <div>
       <h1 className="mb-4 text-2xl font-bold">Tetapan kedai</h1>
       <Notice error={error} success={saved ? "Tetapan disimpan." : undefined} />
+      <div className="mb-4 flex flex-wrap items-center gap-2 rounded-xl bg-white p-4 text-sm shadow-sm">
+        <span>Pelan semasa:</span>
+        <span className="rounded-full bg-emerald-100 px-3 py-1 font-bold text-emerald-800 capitalize">{plan}</span>
+        {plan === "lite" && <span className="text-stone-500">Pesanan dari meja dan skrin kru dibuka dalam pelan Smart. Hubungi BinaLab untuk naik taraf.</span>}
+      </div>
       <form action={saveSettings} className="space-y-4 rounded-xl bg-white p-5 shadow-sm">
         <input type="hidden" name="current_logo_url" value={s.logo_url ?? ""} />
         <label className="block text-sm font-medium">

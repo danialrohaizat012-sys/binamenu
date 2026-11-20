@@ -58,10 +58,38 @@ Tampal NFC tag di belakang sticker, tepat di tengah (di belakang QR).
 
 Tag disyorkan: **NTAG213** (cukup untuk satu URL). Jika stand logam, guna tag *anti-metal*.
 
+## Smart: pesanan meja, skrin kru, mod pelayan
+
+1. Jalankan semula `supabase/schema.sql` (selamat diulang). Ia menambah meja, pesanan, pilihan item, laporan dan Realtime untuk jadual `orders`.
+2. Buka pesanan untuk outlet (hanya BinaLab, melalui SQL Editor):
+   ```sql
+   update public.subscription set plan = 'smart' where id = 1;  -- 'lite' | 'smart' | 'pro'
+   ```
+3. Akaun kru: **Authentication → Users → Add user**, kemudian:
+   ```sql
+   insert into public.admins (user_id, role) values ('UID-KRU', 'kru');
+   ```
+   Kru log masuk di `/admin/login` dan terus dibawa ke **/kru**. Owner (`role = 'owner'`) nampak semua halaman admin.
+4. Admin → **Meja & NFC**: tambah meja. Setiap meja dapat pautan `/t/{kod}`. Tulis pautan itu ke tag NFC dan cetak QR yang sama.
+
+| Halaman | Siapa | Fungsi |
+|---|---|---|
+| `/t/{kod}` | Pelanggan | Menu meja. Smart/Pro: pilih item, pilihan (kurang manis, ais), catatan, troli, hantar pesanan, lihat status. |
+| `/kru` | Kru & owner | Pesanan baru masa nyata, bunyi loceng, Siap/Batal, cari pesanan hari ini. Semak setiap 8 saat jika Realtime terputus. |
+| `/kru/pesan` | Kru & owner | Mod pelayan: pilih meja, masukkan order; masuk skrin kru sebagai "Pelayan". |
+| `/admin/laporan` | Owner | Laporan mingguan dan butang hantar ke WhatsApp owner. |
+
+Harga dan pilihan setiap pesanan dikira semula dalam pangkalan data (`place_order`), bukan di telefon pelanggan.
+Pelanggan bayar di kaunter; Bina Menu belum mengutip bayaran. Laporan WhatsApp dihantar dengan butang, belum automatik.
+
 ## Struktur
 
 ```
-app/page.tsx                 Menu awam (statik, dikemas kini bila admin simpan)
+app/page.tsx                 Menu awam umum (tanpa meja)
+app/t/[code]/                Menu meja + pesanan pelanggan (Smart)
+app/kru/                     Skrin kru dan mod pelayan
+components/order/            Troli, pilihan item, pengesahan pesanan
+components/kru/CrewBoard.tsx Skrin kru masa nyata
 app/menu-templates.css       Gaya setiap template (Klasik, Kafe, Premium, Warung)
 lib/sticker.ts               Design sticker bulat 3 inci (NFC + QR + nombor meja)
 lib/templates.ts             Senarai template yang boleh dipilih

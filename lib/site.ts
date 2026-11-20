@@ -7,6 +7,7 @@ export async function getSiteUrl() {
   return `${h.get("x-forwarded-proto") ?? "https"}://${h.get("host")}`;
 }
 
-export function tableUrl(base: string, table?: string | null) {
-  return table ? `${base}/?meja=${encodeURIComponent(table)}` : base;
+// Pautan meja yang ditulis ke tag NFC dan QR. Tanpa kod: menu umum.
+export function tableUrl(base: string, code?: string | null) {
+  return code ? `${base}/t/${encodeURIComponent(code)}` : base;
 }

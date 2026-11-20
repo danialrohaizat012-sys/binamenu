@@ -1,23 +1,21 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import NotRegistered from "@/components/NotRegistered";
+import { requireStaff } from "@/lib/staff";
 import { signOut } from "../actions";
 
 const links = [
   { href: "/admin", label: "Menu" },
   { href: "/admin/categories", label: "Kategori" },
+  { href: "/admin/nfc", label: "Meja & NFC" },
+  { href: "/admin/laporan", label: "Laporan" },
   { href: "/admin/settings", label: "Tetapan kedai" },
-  { href: "/admin/nfc", label: "NFC & QR" },
 ];
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) redirect("/admin/login");
-
-  const { data: admin } = await supabase.from("admins").select("user_id").eq("user_id", user.id).maybeSingle();
+  const { user, role } = await requireStaff();
+  // Kru hanya guna skrin kru dan mod pelayan
+  if (role === "kru") redirect("/kru");
 
   return (
     <div className="min-h-dvh">
@@ -30,8 +28,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
                 {l.label}
               </Link>
             ))}
-            <a href="/" target="_blank" className="text-stone-600 hover:text-orange-600">
-              Lihat menu ↗
+            <a href="/kru" target="_blank" className="text-stone-600 hover:text-orange-600">
+              Skrin kru ↗
             </a>
           </nav>
           <form action={signOut} className="ml-auto">
@@ -40,19 +38,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         </div>
       </header>
       <main className="mx-auto max-w-4xl px-4 py-6 print:max-w-none print:p-0">
-        {admin ? (
-          children
-        ) : (
-          <div className="rounded-xl bg-amber-50 p-5 text-amber-900">
-            <p className="font-semibold">Akaun ini belum didaftarkan sebagai admin.</p>
-            <p className="mt-2 text-sm">
-              Jalankan SQL ini dalam Supabase SQL Editor:
-              <code className="mt-2 block rounded bg-white p-2 text-xs">
-                insert into public.admins (user_id) values (&apos;{user.id}&apos;);
-              </code>
-            </p>
-          </div>
-        )}
+        {role ? children : <NotRegistered userId={user.id} />}
       </main>
     </div>
   );

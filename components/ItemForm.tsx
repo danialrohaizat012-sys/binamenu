@@ -1,4 +1,5 @@
 import Link from "next/link";
+import OptionsEditor from "@/components/OptionsEditor";
 import type { Category, MenuItem } from "@/lib/types";
 import { deleteItem, saveItem } from "@/app/admin/actions";
 
@@ -50,6 +51,8 @@ export default function ItemForm({ item, categories }: { item?: MenuItem; catego
           <input name="image" type="file" accept="image/*" className="mt-2 block w-full text-sm" />
           <p className="mt-1 text-xs font-normal text-stone-500">Maksimum 5MB. Gambar segi empat sama paling cantik.</p>
         </div>
+
+        <OptionsEditor initial={item?.options ?? []} />
 
         <div className="grid gap-4 sm:grid-cols-3">
           <label className="flex items-center gap-2 text-sm">

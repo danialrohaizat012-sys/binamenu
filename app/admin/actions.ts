@@ -3,7 +3,9 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { parseOptions } from "@/lib/options";
 import { getTemplate } from "@/lib/templates";
+import type { OptionGroup } from "@/lib/types";
 
 const BUCKET = "menu-images";
 
@@ -19,6 +21,7 @@ function back(path: string, error?: string): never {
 // Kemas kini halaman menu awam selepas setiap perubahan
 function refreshMenu() {
   revalidatePath("/");
+  revalidatePath("/t/[code]", "page");
   revalidatePath("/admin", "layout");
 }
 
@@ -42,12 +45,13 @@ async function removeImage(supabase: Awaited<ReturnType<typeof createClient>>, u
 
 export async function signIn(formData: FormData) {
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data: auth, error } = await supabase.auth.signInWithPassword({
     email: String(formData.get("email")),
     password: String(formData.get("password")),
   });
   if (error) back("/admin/login", "Emel atau kata laluan salah.");
-  redirect("/admin");
+  const { data: staff } = await supabase.from("admins").select("role").eq("user_id", auth.user!.id).maybeSingle();
+  redirect(staff?.role === "kru" ? "/kru" : "/admin");
 }
 
 export async function signOut() {
@@ -70,6 +74,13 @@ export async function saveItem(formData: FormData) {
     back(formPath, "Sila isi nama, kategori dan harga yang sah.");
   }
 
+  let options: OptionGroup[] = [];
+  try {
+    options = parseOptions(String(formData.get("options") ?? "[]"));
+  } catch (e) {
+    back(formPath, (e as Error).message);
+  }
+
   let image_url = text(formData, "current_image_url");
   try {
     const uploaded = await uploadImage(supabase, formData.get("image"));
@@ -86,6 +97,7 @@ export async function saveItem(formData: FormData) {
     category_id,
     price,
     image_url,
+    options,
     description: text(formData, "description"),
     sort_order: Number(formData.get("sort_order") || 0),
     is_available: formData.get("is_available") === "on",
@@ -177,4 +189,33 @@ export async function saveSettings(formData: FormData) {
   if (error) back("/admin/settings", error.message);
   refreshMenu();
   redirect("/admin/settings?saved=1");
+}
+
+// ---------------- Meja (pautan NFC/QR) ----------------
+
+export async function addTables(formData: FormData) {
+  const supabase = await createClient();
+  const count = Math.min(Math.max(Number(formData.get("count")) || 0, 1), 50);
+  const { data: existing } = await supabase.from("dining_tables").select("label, sort_order");
+  const numbers = (existing ?? []).map((t) => Number(t.label)).filter((n) => Number.isInteger(n));
+  const start = (numbers.length ? Math.max(...numbers) : 0) + 1;
+  const order = Math.max(0, ...(existing ?? []).map((t) => t.sort_order ?? 0)) + 1;
+  const rows = Array.from({ length: count }, (_, i) => ({ label: String(start + i), sort_order: order + i }));
+  const { error } = await supabase.from("dining_tables").insert(rows);
+  if (error) back("/admin/nfc", error.message);
+  revalidatePath("/admin/nfc");
+  back("/admin/nfc");
+}
+
+export async function updateTable(formData: FormData) {
+  const supabase = await createClient();
+  const label = text(formData, "label");
+  if (!label) back("/admin/nfc", "Label meja diperlukan.");
+  const { error } = await supabase
+    .from("dining_tables")
+    .update({ label, is_active: formData.get("is_active") === "on" })
+    .eq("id", String(formData.get("id")));
+  if (error) back("/admin/nfc", error.message);
+  refreshMenu();
+  back("/admin/nfc");
 }
