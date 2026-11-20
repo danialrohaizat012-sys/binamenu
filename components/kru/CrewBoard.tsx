@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { formatPrice } from "@/lib/format";
 import { describeOptions } from "@/lib/options";
 import { createClient } from "@/lib/supabase/client";
 import { startOfTodayMyt, timeMyt } from "@/lib/time";
@@ -30,15 +29,15 @@ function minutesSince(iso: string, now: number) {
   return Math.max(0, Math.floor((now - new Date(iso).getTime()) / 60000));
 }
 
-export default function CrewBoard({ initial, loadError }: { initial: Order[]; loadError: string | null }) {
+// Papan pesanan masuk untuk kru. Sengaja tiada jumlah RM atau pengurusan bayaran:
+// kedai yang ada POS terus guna POS; Bina Menu hanya hantar slip pesanan ikut meja.
+export default function CrewBoard({ outletId, initial, loadError }: { outletId: string; initial: Order[]; loadError: string | null }) {
   const supabase = useMemo(() => createClient(), []);
   const [orders, setOrders] = useState<Record<string, Order>>(() => Object.fromEntries(initial.map((o) => [o.id, o])));
   const [conn, setConn] = useState<Conn>("polling");
   const [tab, setTab] = useState<"baru" | "selesai">("baru");
-  const [search, setSearch] = useState("");
   const [now, setNow] = useState(() => Date.now());
   const [error, setError] = useState<string | null>(loadError);
-  const [confirmCancel, setConfirmCancel] = useState<string | null>(null);
   const [soundOn, setSoundOn] = useState(false);
   const audio = useRef<AudioContext | null>(null);
   const seen = useRef(new Set(initial.map((o) => o.id)));
@@ -68,6 +67,7 @@ export default function CrewBoard({ initial, loadError }: { initial: Order[]; lo
     const { data, error } = await supabase
       .from("orders")
       .select("*, order_items(*)")
+      .eq("outlet_id", outletId)
       .gte("created_at", startOfTodayMyt().toISOString())
       .order("created_at");
     if (error) {
@@ -76,13 +76,13 @@ export default function CrewBoard({ initial, loadError }: { initial: Order[]; lo
     }
     setError(null);
     merge((data ?? []) as Order[]);
-  }, [supabase, merge]);
+  }, [supabase, merge, outletId]);
 
   // Masa nyata melalui Supabase Realtime
   useEffect(() => {
     const channel = supabase
-      .channel("pesanan-kru")
-      .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, async (payload) => {
+      .channel(`pesanan-kru-${outletId}`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "orders", filter: `outlet_id=eq.${outletId}` }, async (payload) => {
         const id = (payload.new as { id?: string })?.id;
         if (!id) return;
         const { data } = await supabase.from("orders").select("*, order_items(*)").eq("id", id).maybeSingle();
@@ -92,7 +92,7 @@ export default function CrewBoard({ initial, loadError }: { initial: Order[]; lo
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [supabase, merge]);
+  }, [supabase, merge, outletId]);
 
   // Semakan berkala sebagai sandaran; lebih kerap bila realtime tidak bersambung
   useEffect(() => {
@@ -124,13 +124,15 @@ export default function CrewBoard({ initial, loadError }: { initial: Order[]; lo
     () => all.filter((o) => o.status === "baru").sort((a, b) => a.created_at.localeCompare(b.created_at)),
     [all],
   );
-  const done = useMemo(() => {
-    const q = search.trim().toLowerCase().replace(/^#/, "");
-    return all
-      .filter((o) => o.status !== "baru")
-      .filter((o) => !q || o.table_label.toLowerCase() === q || String(o.number) === q || o.table_label.toLowerCase().includes(q))
-      .sort((a, b) => b.created_at.localeCompare(a.created_at));
-  }, [all, search]);
+  // Hanya pesanan yang baru selesai (3 jam terakhir), untuk semak semula bila perlu
+  const done = useMemo(
+    () =>
+      all
+        .filter((o) => o.status !== "baru" && now - new Date(o.done_at ?? o.created_at).getTime() < 3 * 60 * 60 * 1000)
+        .sort((a, b) => (b.done_at ?? b.created_at).localeCompare(a.done_at ?? a.created_at))
+        .slice(0, 30),
+    [all, now],
+  );
 
   // Tajuk tab tunjuk bilangan pesanan baru. Diulang setiap tick kerana metadata halaman boleh menimpanya.
   useEffect(() => {
@@ -141,7 +143,6 @@ export default function CrewBoard({ initial, loadError }: { initial: Order[]; lo
     const before = order;
     const patch = { status, done_at: status === "baru" ? null : new Date().toISOString() };
     setOrders((prev) => ({ ...prev, [order.id]: { ...order, ...patch } }));
-    setConfirmCancel(null);
     const { error } = await supabase.from("orders").update(patch).eq("id", order.id);
     if (error) {
       setOrders((prev) => ({ ...prev, [order.id]: before }));
@@ -168,7 +169,7 @@ export default function CrewBoard({ initial, loadError }: { initial: Order[]; lo
             Baru ({fresh.length})
           </button>
           <button onClick={() => setTab("selesai")} className={`rounded-full px-4 py-2 text-sm font-semibold ${tab === "selesai" ? "bg-[#0f2347] text-white" : "text-stone-600"}`}>
-            Selesai hari ini ({all.length - fresh.length})
+            Baru selesai ({done.length})
           </button>
         </div>
         <span className="flex items-center gap-2 text-sm text-stone-600" aria-live="polite">
@@ -219,19 +220,10 @@ export default function CrewBoard({ initial, loadError }: { initial: Order[]; lo
                     ))}
                     {o.note && <li className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900">Catatan: {o.note}</li>}
                   </ul>
-                  <footer className="flex items-center gap-2 border-t border-stone-100 p-3">
-                    <span className="mr-auto text-sm font-semibold tabular-nums text-stone-600">{formatPrice(o.total)}</span>
-                    {confirmCancel === o.id ? (
-                      <>
-                        <button onClick={() => setConfirmCancel(null)} className="rounded-xl px-3 py-2 text-sm font-semibold text-stone-600">Tak jadi</button>
-                        <button onClick={() => setStatus(o, "batal")} className="rounded-xl bg-red-600 px-3 py-2 text-sm font-semibold text-white">Ya, batal</button>
-                      </>
-                    ) : (
-                      <>
-                        <button onClick={() => setConfirmCancel(o.id)} className="rounded-xl px-3 py-2 text-sm font-semibold text-stone-500 hover:text-red-600">Batal</button>
-                        <button onClick={() => setStatus(o, "siap")} className="rounded-xl bg-emerald-600 px-5 py-2.5 font-bold text-white hover:bg-emerald-700">Siap</button>
-                      </>
-                    )}
+                  <footer className="border-t border-stone-100 p-3">
+                    <button onClick={() => setStatus(o, "siap")} className="w-full rounded-xl bg-emerald-600 px-5 py-3 font-bold text-white hover:bg-emerald-700">
+                      Selesai
+                    </button>
                   </footer>
                 </article>
               );
@@ -242,13 +234,7 @@ export default function CrewBoard({ initial, loadError }: { initial: Order[]; lo
 
       {tab === "selesai" && (
         <div className="space-y-3">
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Cari nombor meja atau #pesanan"
-            className="w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-[16px] sm:max-w-sm"
-            aria-label="Cari pesanan"
-          />
+          <p className="text-sm text-stone-500">Pesanan yang ditanda selesai dalam 3 jam terakhir. Tekan &quot;Buka semula&quot; jika tersalah tekan.</p>
           {done.length === 0 && <p className="rounded-2xl bg-white p-6 text-center text-stone-500">Tiada pesanan.</p>}
           <ul className="divide-y divide-stone-100 overflow-hidden rounded-2xl bg-white shadow-sm">
             {done.map((o) => (
@@ -256,9 +242,6 @@ export default function CrewBoard({ initial, loadError }: { initial: Order[]; lo
                 <span className="w-24 font-bold text-[#0f2347]">Meja {o.table_label}</span>
                 <span className="text-sm text-stone-500">#{o.number} · {timeMyt(o.created_at)}</span>
                 <span className="min-w-0 flex-1 truncate text-sm">{o.order_items.map((i) => `${i.quantity}× ${i.name}`).join(", ")}</span>
-                <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${o.status === "siap" ? "bg-emerald-100 text-emerald-800" : "bg-stone-200 text-stone-600"}`}>
-                  {o.status === "siap" ? "Siap" : "Batal"}
-                </span>
                 <button onClick={() => setStatus(o, "baru")} className="text-sm font-semibold text-stone-500 hover:text-stone-900">Buka semula</button>
               </li>
             ))}

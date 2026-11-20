@@ -2,14 +2,14 @@ import Link from "next/link";
 import QRCode from "qrcode";
 import Notice from "@/components/Notice";
 import { getSiteUrl, tableUrl } from "@/lib/site";
-import { createClient } from "@/lib/supabase/server";
+import { requireOwner } from "@/lib/staff";
 import type { DiningTable } from "@/lib/types";
 import { addTables, updateTable } from "../../actions";
 
 export default async function TablesPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
   const { error } = await searchParams;
-  const supabase = await createClient();
-  const { data } = await supabase.from("dining_tables").select("*").order("sort_order").order("label");
+  const { supabase, outlet } = await requireOwner();
+  const { data } = await supabase.from("dining_tables").select("*").eq("outlet_id", outlet.id).order("sort_order").order("label");
   const tables = (data ?? []) as DiningTable[];
   const base = await getSiteUrl();
   const qrs = await Promise.all(tables.map((t) => QRCode.toString(tableUrl(base, t.code), { type: "svg", margin: 1 })));

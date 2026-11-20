@@ -1,12 +1,12 @@
 import Notice from "@/components/Notice";
-import { createClient } from "@/lib/supabase/server";
+import { requireOwner } from "@/lib/staff";
 import type { Category } from "@/lib/types";
 import { deleteCategory, saveCategory } from "../../actions";
 
 export default async function CategoriesPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
   const { error } = await searchParams;
-  const supabase = await createClient();
-  const { data } = await supabase.from("categories").select("*").order("sort_order").order("name");
+  const { supabase, outlet } = await requireOwner();
+  const { data } = await supabase.from("categories").select("*").eq("outlet_id", outlet.id).order("sort_order").order("name");
   const categories = (data ?? []) as Category[];
 
   return (

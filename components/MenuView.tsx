@@ -1,7 +1,6 @@
 "use client";
 
-import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import TableBadge from "@/components/TableBadge";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CartSheet from "@/components/order/CartSheet";
 import ItemSheet from "@/components/order/ItemSheet";
 import OrderSent from "@/components/order/OrderSent";
@@ -18,7 +17,7 @@ type Props = {
   items: MenuItem[];
   // Dari pautan /t/{kod}: meja diketahui
   table?: { label: string; code: string };
-  // Ada hanya untuk pelan Smart/Pro
+  // Ada hanya untuk pelan Smart
   ordering?: OrderingProps;
 };
 
@@ -117,13 +116,7 @@ export default function MenuView({ settings, categories, items, table, ordering 
         <h1 className="m-title">{settings.name}</h1>
         {settings.tagline && <p className="m-tagline">{settings.tagline}</p>}
         {settings.opening_hours && <p className="m-hours">{settings.opening_hours}</p>}
-        {table ? (
-          <span className="m-table">Meja {table.label}</span>
-        ) : (
-          <Suspense>
-            <TableBadge />
-          </Suspense>
-        )}
+        {table && <span className="m-table">Meja {table.label}</span>}
       </header>
 
       <div className="m-bar">
@@ -222,7 +215,6 @@ export default function MenuView({ settings, categories, items, table, ordering 
       {sent && table && (
         <OrderSent
           number={sent.number}
-          total={sent.total}
           tableLabel={table.label}
           checkStatus={checkStatus}
           doneHref={ordering?.mode === "pelayan" ? ordering.doneHref : undefined}

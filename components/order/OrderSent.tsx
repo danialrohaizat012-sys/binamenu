@@ -1,11 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { formatPrice } from "@/lib/format";
 
 type Props = {
   number: number;
-  total: number;
   tableLabel: string;
   checkStatus?: () => Promise<string | null>;
   doneHref?: string;
@@ -13,12 +11,12 @@ type Props = {
 };
 
 const TEXT: Record<string, { title: string; sub: string }> = {
-  baru: { title: "Pesanan diterima", sub: "Kru sedang menyediakan pesanan anda." },
-  siap: { title: "Pesanan siap", sub: "Pesanan anda sedang dihantar ke meja." },
-  batal: { title: "Pesanan dibatalkan", sub: "Sila tanya kru di kaunter." },
+  baru: { title: "Pesanan dihantar", sub: "Pesanan anda sudah sampai ke skrin kru." },
+  siap: { title: "Kru dah uruskan pesanan anda", sub: "Bayar di kaunter seperti biasa." },
+  batal: { title: "Sila tanya kru", sub: "Pesanan ini tidak dapat diteruskan." },
 };
 
-export default function OrderSent({ number, total, tableLabel, checkStatus, doneHref, onClose }: Props) {
+export default function OrderSent({ number, tableLabel, checkStatus, doneHref, onClose }: Props) {
   const [status, setStatus] = useState("baru");
 
   // Semak status setiap 8 saat sehingga siap atau batal (maksimum 45 minit)
@@ -51,7 +49,6 @@ export default function OrderSent({ number, total, tableLabel, checkStatus, done
           <div className="o-sent-meta">
             <span>Meja {tableLabel}</span>
             <span>#{number}</span>
-            <span>{formatPrice(total)}</span>
           </div>
           {doneHref ? (
             <div className="o-sent-actions">

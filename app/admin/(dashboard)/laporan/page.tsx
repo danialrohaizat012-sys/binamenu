@@ -1,9 +1,8 @@
 import Link from "next/link";
 import CopyButton from "@/components/CopyButton";
 import Notice from "@/components/Notice";
-import { formatPrice } from "@/lib/format";
 import { busiest, pct, reportText, waNumber, type WeeklyReport } from "@/lib/report";
-import { createClient } from "@/lib/supabase/server";
+import { requireOwner } from "@/lib/staff";
 import { addDays, dateMyt, mondayMyt } from "@/lib/time";
 
 export const dynamic = "force-dynamic";
@@ -13,10 +12,10 @@ export default async function ReportPage({ searchParams }: { searchParams: Promi
   const thisWeek = mondayMyt();
   const start = mula && /^\d{4}-\d{2}-\d{2}$/.test(mula) ? mondayMyt(new Date(`${mula}T12:00:00+08:00`)) : thisWeek;
 
-  const supabase = await createClient();
+  const { supabase, outlet } = await requireOwner();
   const [{ data, error }, { data: settings }] = await Promise.all([
-    supabase.rpc("weekly_report", { p_start: start }),
-    supabase.from("settings").select("name, phone").eq("id", 1).single(),
+    supabase.rpc("weekly_report", { p_outlet: outlet.id, p_start: start }),
+    supabase.from("outlets").select("name, phone").eq("id", outlet.id).single(),
   ]);
   const r = data as WeeklyReport | null;
   const text = r ? reportText(settings?.name ?? "Kedai", r) : "";
@@ -28,7 +27,7 @@ export default async function ReportPage({ searchParams }: { searchParams: Promi
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center gap-3">
-        <h1 className="text-2xl font-bold">Laporan mingguan</h1>
+        <h1 className="text-2xl font-bold">Laporan penggunaan</h1>
         <div className="ml-auto flex items-center gap-2 text-sm">
           <Link href={`/admin/laporan?mula=${addDays(start, -7)}`} className="btn-secondary px-3 py-1.5">← Minggu lepas</Link>
           <span className="font-medium">
@@ -44,11 +43,10 @@ export default async function ReportPage({ searchParams }: { searchParams: Promi
 
       {r && (
         <>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
             {[
-              ["Pesanan", String(r.orders), r.prev_orders ? `minggu lepas ${r.prev_orders}` : "minggu lepas tiada"],
-              ["Jualan melalui Bina Menu", formatPrice(r.revenue), `${r.cancelled} dibatalkan`],
-              ["Purata siap", r.avg_minutes_to_done != null ? `${r.avg_minutes_to_done} min` : "–", "dari pesan ke tanda siap"],
+              ["Pesanan melalui Bina Menu", String(r.orders), r.prev_orders ? `minggu lepas ${r.prev_orders}` : "minggu lepas tiada"],
+              ["Dari meja (pelanggan)", String(r.from_customer), `${pct(r.from_customer, r.orders)}% daripada semua pesanan`],
               ["Dengan pilihan/catatan", String(r.with_options_or_notes), "kurang manis, tak nak sayur…"],
             ].map(([label, value, sub]) => (
               <div key={label} className="rounded-xl bg-white p-4 shadow-sm">

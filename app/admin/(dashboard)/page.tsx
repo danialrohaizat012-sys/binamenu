@@ -1,14 +1,14 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { requireOwner } from "@/lib/staff";
 import { formatPrice } from "@/lib/format";
 import type { Category, MenuItem } from "@/lib/types";
 import { toggleAvailable } from "../actions";
 
 export default async function AdminMenuPage() {
-  const supabase = await createClient();
+  const { supabase, outlet } = await requireOwner();
   const [{ data: categories }, { data: items }] = await Promise.all([
-    supabase.from("categories").select("*").order("sort_order").order("name"),
-    supabase.from("menu_items").select("*").order("sort_order").order("name"),
+    supabase.from("categories").select("*").eq("outlet_id", outlet.id).order("sort_order").order("name"),
+    supabase.from("menu_items").select("*").eq("outlet_id", outlet.id).order("sort_order").order("name"),
   ]);
   const cats = (categories ?? []) as Category[];
   const all = (items ?? []) as MenuItem[];

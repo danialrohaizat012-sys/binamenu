@@ -1,5 +1,10 @@
-export type Settings = {
-  id: number;
+export type Plan = "lite" | "smart";
+
+// Satu kedai. Butiran paparan menu disimpan terus pada outlet.
+export type Outlet = {
+  id: string;
+  company_id: string;
+  slug: string;
   name: string;
   tagline: string | null;
   logo_url: string | null;
@@ -8,7 +13,12 @@ export type Settings = {
   opening_hours: string | null;
   theme_color: string;
   template: string;
+  plan: Plan;
+  is_active: boolean;
 };
+
+// Nama lama yang masih digunakan oleh komponen menu
+export type Settings = Outlet;
 
 export type Category = {
   id: string;
@@ -18,6 +28,7 @@ export type Category = {
 
 export type MenuItem = {
   id: string;
+  outlet_id: string;
   category_id: string;
   name: string;
   description: string | null;
@@ -36,10 +47,9 @@ export type OptionGroup = { name: string; required: boolean; multi: boolean; cho
 
 export type ChosenOption = { group: string; choice: string; price: number };
 
-export type Plan = "lite" | "smart" | "pro";
-
 export type DiningTable = {
   id: string;
+  outlet_id: string;
   label: string;
   code: string;
   is_active: boolean;
@@ -62,6 +72,7 @@ export type OrderItem = {
 
 export type Order = {
   id: string;
+  outlet_id: string;
   number: number;
   table_id: string | null;
   table_label: string;

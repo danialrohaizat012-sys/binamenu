@@ -1,4 +1,3 @@
-import { formatPrice } from "@/lib/format";
 import { dateMyt } from "@/lib/time";
 
 export type WeeklyReport = {
@@ -6,11 +5,9 @@ export type WeeklyReport = {
   end: string;
   orders: number;
   cancelled: number;
-  revenue: number;
   from_customer: number;
   from_waiter: number;
   tables_used: number;
-  avg_minutes_to_done: number | null;
   with_options_or_notes: number;
   prev_orders: number;
   by_day: { day: string; orders: number }[];
@@ -29,7 +26,7 @@ export function busiest(r: WeeklyReport) {
   };
 }
 
-// Teks ringkas untuk dihantar ke WhatsApp owner
+// Teks ringkas untuk dihantar ke WhatsApp owner (penggunaan sahaja; jualan kekal dalam POS/kaunter)
 export function reportText(shop: string, r: WeeklyReport) {
   const b = busiest(r);
   const change = r.prev_orders ? ` (minggu lepas ${r.prev_orders})` : "";
@@ -38,9 +35,7 @@ export function reportText(shop: string, r: WeeklyReport) {
     `${dateMyt(r.start)} – ${dateMyt(r.end)}`,
     "",
     `🧾 Pesanan: ${r.orders}${change}`,
-    `💵 Jualan melalui Bina Menu: ${formatPrice(r.revenue)}`,
     `📱 Dari pelanggan ${pct(r.from_customer, r.orders)}% · pelayan ${pct(r.from_waiter, r.orders)}%`,
-    r.avg_minutes_to_done != null ? `⏱️ Purata siap: ${r.avg_minutes_to_done} minit` : null,
     `📝 Pesanan dengan pilihan/catatan: ${r.with_options_or_notes}`,
     b.day ? `🔥 Paling sibuk: ${b.day}, ${b.hour}` : null,
     r.top_items.length ? `🏆 ${r.top_items.slice(0, 3).map((i) => `${i.name} (${i.qty})`).join(", ")}` : null,

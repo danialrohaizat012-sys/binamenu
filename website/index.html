@@ -165,7 +165,7 @@ section { padding-block: clamp(64px, 9vw, 104px) }
 .calc .btns { display: flex; flex-wrap: wrap; gap: 10px }
 
 /* Harga */
-.plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; align-items: stretch }
+.plans { display: grid; grid-template-columns: repeat(2, minmax(0, 420px)); justify-content: center; gap: 20px; margin-top: 40px; align-items: stretch }
 @media (max-width: 920px) { .plans { grid-template-columns: 1fr; max-width: 460px; margin-inline: auto } }
 .plan { border-radius: 22px; border: 1px solid var(--line); padding: 28px; display: flex; flex-direction: column; gap: 16px; position: relative; background: #fff }
 .plan.hot { border: 2px solid var(--green); box-shadow: 0 24px 50px -24px rgb(18 163 107 / .45) }
@@ -224,6 +224,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space
     <div class="nav-links">
       <a href="#cara">Cara ia berfungsi</a>
       <a href="#sticker">Sticker</a>
+      <a href="#pos">Dah ada POS?</a>
       <a href="#harga">Harga</a>
       <a href="#soalan">Soalan</a>
     </div>
@@ -244,7 +245,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space
       <ul class="hero-points">
         <li>Tiada app untuk dimuat turun</li>
         <li>Pesanan masuk ikut nombor meja</li>
-        <li>Sticker dengan logo kedai anda</li>
+        <li>Sesuai walaupun kedai dah ada POS</li>
       </ul>
     </div>
 
@@ -267,7 +268,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space
           <li>1× Nasi Lemak Ayam<small>Tak nak timun</small></li>
           <li>2× Teh Tarik<small>Kurang manis</small></li>
         </ul>
-        <div class="done">Tanda siap</div>
+        <div class="done">Selesai</div>
       </div>
     </div>
   </div>
@@ -293,7 +294,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space
     <div class="steps">
       <div class="step"><span class="n">1</span><h3>Pelanggan tap atau imbas</h3><p>Tap telefon pada sticker di meja, atau imbas QR. Menu terus terbuka dengan nombor meja yang betul.</p></div>
       <div class="step"><span class="n">2</span><h3>Pilih dan pesan</h3><p>Pelanggan pilih makanan, tetapkan pilihan seperti kurang manis atau tak nak sayur, kemudian hantar.</p></div>
-      <div class="step"><span class="n">3</span><h3>Kru terima di skrin</h3><p>Pesanan muncul di tablet atau telefon kru dengan bunyi loceng dan nombor meja. Tekan "Siap" bila dihantar.</p></div>
+      <div class="step"><span class="n">3</span><h3>Kru terima di skrin</h3><p>Pesanan muncul di tablet atau telefon kru dengan bunyi loceng dan nombor meja. Tekan "Selesai" bila sudah diuruskan.</p></div>
     </div>
     <div class="waiter">
       <span class="ico" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M10 18h4"/></svg></span>
@@ -306,29 +307,34 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space
 <section id="sticker" class="sticker-sec" aria-labelledby="sticker-h">
   <div class="wrap">
     <p class="eyebrow" style="text-align:center">Sticker meja</p>
-    <h2 id="sticker-h" style="text-align:center;margin-top:12px">Sticker dengan rupa kedai anda</h2>
-    <p class="lead center" style="text-align:center;margin-top:14px">Tag NFC diletak di bawah sticker. Pilih nama, warna dan logo; kami cetak QR dan nombor meja yang berbeza untuk setiap meja.</p>
+    <h2 id="sticker-h" style="text-align:center;margin-top:12px">Satu sticker untuk setiap meja</h2>
+    <p class="lead center" style="text-align:center;margin-top:14px">Saiz kad bank (85.6 × 54mm), design standard Bina Menu, siap dengan tag NFC di belakang. Setiap sticker ada nama kedai, QR dan nombor meja sendiri.</p>
     <div class="sticker-grid">
-      <form class="panel" id="designer" aria-label="Reka sticker">
-        <label class="field" for="s-name">Nama kedai<input id="s-name" type="text" maxlength="28" value="Kafe Anda"></label>
-        <div class="field"><span>Warna</span><div class="swatches" id="swatches" role="group" aria-label="Warna sticker"></div></div>
-        <label class="field" for="s-text">Ayat arahan
-          <select id="s-text">
-            <option>TAP ATAU IMBAS UNTUK MENU</option>
-            <option>TAP UNTUK PESAN</option>
-            <option>IMBAS &amp; PESAN DARI MEJA</option>
-          </select>
-        </label>
-        <div class="row2">
-          <label class="field" for="s-table">Nombor meja<input id="s-table" type="number" min="1" max="99" value="8"></label>
-          <label class="field" for="s-logo">Logo (pilihan)<input id="s-logo" type="file" accept="image/*"></label>
-        </div>
-        <p class="note">Ini pratonton sahaja. Sebelum cetak, kami hantar reka bentuk akhir untuk anda sahkan.</p>
-      </form>
       <div class="preview">
-        <svg id="sticker-svg" viewBox="0 0 300 300" role="img" aria-label="Pratonton sticker"></svg>
-        <div class="layers" aria-label="Susunan pemasangan"><span>Sticker bercetak</span>→<span>Tag NFC di bawah</span>→<span>Permukaan meja</span></div>
-        <p class="note">QR dalam pratonton ialah contoh. Setiap meja dapat QR sendiri.</p>
+        <svg viewBox="0 0 856 540" role="img" aria-label="Contoh sticker meja Bina Menu">
+          <rect width="856" height="540" rx="32" fill="#0f2347"/>
+          <path d="M520 0h304a32 32 0 0 1 32 32v476a32 32 0 0 1-32 32H520z" fill="#12a36b"/>
+          <rect x="568" y="54" width="240" height="240" rx="20" fill="#fff"/>
+          <g fill="#0f2347" id="qr-sample"></g>
+          <rect x="570" y="340" width="236" height="76" rx="38" fill="#fff"/>
+          <text x="688" y="392" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="40" letter-spacing="3" fill="#0f2347">MEJA 08</text>
+          <text x="60" y="92" font-family="Arial, sans-serif" font-weight="700" font-size="26" letter-spacing="3" fill="#9fb3d9">KAFE ANDA</text>
+          <g fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round"><path d="M70 170a30 30 0 0 1 0 60"/><path d="M95 145a65 65 0 0 1 0 110"/><path d="M120 120a100 100 0 0 1 0 160"/></g>
+          <text x="60" y="360" font-family="Arial, sans-serif" font-weight="700" font-size="72" fill="#fff">Tap atau</text>
+          <text x="60" y="435" font-family="Arial, sans-serif" font-weight="700" font-size="72" fill="#12a36b">imbas</text>
+          <text x="60" y="490" font-family="Arial, sans-serif" font-size="26" fill="#c4cfe4">untuk lihat menu · Bina Menu</text>
+        </svg>
+        <div class="layers" aria-label="Susunan pemasangan"><span>Sticker bercetak</span>→<span>Tag NFC di belakang</span>→<span>Stand atau permukaan meja</span></div>
+      </div>
+      <div class="panel">
+        <h3>RM5 setiap sticker</h3>
+        <p class="note" style="font-size:15px">Bayar sekali. Satu sticker untuk satu meja, sudah diprogram dan diuji sebelum dihantar.</p>
+        <ul style="margin:0;padding-left:18px;display:grid;gap:8px;color:var(--muted)">
+          <li>Design sama untuk semua kedai, jadi cepat dicetak dan dihantar</li>
+          <li>Nama kedai, QR dan nombor meja dicetak berbeza untuk setiap meja</li>
+          <li>Telefon tanpa NFC boleh imbas QR pada sticker yang sama</li>
+          <li>Naik taraf Lite ke Smart guna sticker yang sama</li>
+        </ul>
       </div>
     </div>
   </div>
@@ -340,12 +346,12 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space
     <h2 id="kit-h" style="margin-top:12px">Sampai siap, anda hanya tampal</h2>
     <div class="kit">
       <div class="card"><span class="em" aria-hidden="true">📶</span><h3>Tag NFC diprogram</h3><p>Setiap tag ditulis dengan pautan meja masing-masing dan diuji sebelum dipos.</p></div>
-      <div class="card"><span class="em" aria-hidden="true">🏷️</span><h3>Sticker custom</h3><p>Nama, warna dan logo kedai anda, dengan QR dan nombor meja untuk telefon tanpa NFC.</p></div>
+      <div class="card"><span class="em" aria-hidden="true">🏷️</span><h3>Sticker saiz kad bank</h3><p>Design standard dengan nama kedai, QR dan nombor meja untuk telefon tanpa NFC.</p></div>
       <div class="card"><span class="em" aria-hidden="true">🎬</span><h3>Video panduan</h3><p>Cara tampal, log masuk, isi menu dan buat pesanan ujian. Staf boleh ikut sendiri.</p></div>
       <div class="card"><span class="em" aria-hidden="true">📦</span><h3>Pos atau kami pasang</h3><p>Setiap set dilabel ikut nombor meja. Pos ke kedai anda, atau kru kami pasang di Kota Bharu.</p></div>
     </div>
     <ol class="timeline" aria-label="Langkah aktifkan">
-      <li><b>1. Hantar butiran</b>Nama outlet, e-mel admin dan senarai meja.</li>
+      <li><b>1. Hantar butiran</b>Nama outlet, e-mel owner dan bilangan meja.</li>
       <li><b>2. Kami sediakan</b>Sticker dicetak, tag diprogram dan diuji, kemudian dipos atau dipasang.</li>
       <li><b>3. Tampal &amp; isi menu</b>Tampal ikut nombor meja. Staf masukkan menu sendiri.</li>
       <li><b>4. Pesanan ujian</b>Tap satu sticker, hantar pesanan, pastikan ia muncul di skrin kru.</li>
@@ -357,12 +363,12 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space
   <div class="wrap">
     <p class="eyebrow" style="text-align:center">Harga</p>
     <h2 id="harga-h" style="text-align:center;margin-top:12px">Satu harga bulanan bagi setiap outlet</h2>
-    <div class="plans">
+    <div class="plans plans-2">
       <article class="plan">
         <h3>Lite</h3>
         <p class="for">Untuk kedai yang hanya mahu menu digital.</p>
-        <div class="price"><b>RM50</b><span>/bulan</span></div>
-        <p class="start">Jumlah mula <b>RM130</b> termasuk 4 set sticker</p>
+        <div class="price"><b>RM29</b><span>/bulan</span></div>
+        <p class="start">+ RM5 setiap sticker meja (sekali bayar)</p>
         <ul>
           <li>Tap sticker atau imbas QR untuk buka menu</li>
           <li>Gambar, harga dan penerangan item</li>
@@ -376,35 +382,22 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space
         <span class="tag">DISYORKAN</span>
         <h3>Smart</h3>
         <p class="for">Untuk kedai yang ambil order di meja dan sesak waktu puncak.</p>
-        <div class="price"><b>RM89</b><span>/bulan</span></div>
-        <p class="start">Jumlah mula <b>RM169</b> termasuk 4 set sticker</p>
+        <div class="price"><b>RM69</b><span>/bulan</span></div>
+        <p class="start">+ RM5 setiap sticker meja (sekali bayar)</p>
         <ul>
           <li>Semua dalam Lite</li>
           <li>Pelanggan pesan terus dari meja</li>
-          <li>Pesanan masuk skrin kru ikut nombor meja</li>
-          <li>Mod pelayan: kru ambil order guna telefon</li>
+          <li>Pesanan muncul di skrin kru ikut nombor meja</li>
           <li>Pilihan dan catatan item (kurang manis, pedas)</li>
-          <li>Laporan mingguan ke WhatsApp owner</li>
+          <li>Mod pelayan: kru ambil order guna telefon</li>
+          <li>Laporan penggunaan mingguan</li>
         </ul>
         <a class="btn btn-green" href="#mula" data-plan="Smart">Pilih Smart</a>
       </article>
-      <article class="plan">
-        <h3>Pro</h3>
-        <p class="for">Untuk outlet yang ramai pelanggan tetap.</p>
-        <div class="price"><b>RM129</b><span>/bulan</span></div>
-        <p class="start">Jumlah mula <b>RM209</b> termasuk 4 set sticker</p>
-        <ul>
-          <li>Semua dalam Smart</li>
-          <li class="soon"><span>Cop ganjaran digital <span class="soon-tag">Segera</span></span></li>
-          <li class="soon"><span>Rekod nama dan nombor pelanggan <span class="soon-tag">Segera</span></span></li>
-          <li class="soon"><span>Promosi WhatsApp dengan persetujuan pelanggan <span class="soon-tag">Segera</span></span></li>
-        </ul>
-        <a class="btn btn-ghost" href="#hubungi" data-plan="Pro">Daftar minat Pro</a>
-      </article>
     </div>
     <div class="fine">
-      <p>Jumlah mula = langganan bulan pertama + minimum 4 set sticker NFC (RM20 setiap set, bayar sekali). Belum termasuk pos atau caj pemasangan.</p>
-      <p>Set tambahan RM20 setiap meja. Tablet atau telefon untuk skrin kru disediakan oleh kedai. Pelanggan bayar di kaunter seperti biasa.</p>
+      <p>Contoh 10 meja: Lite RM29 + RM50 sticker = RM79 untuk mula, kemudian RM29/bulan. Smart = RM119 untuk mula, kemudian RM69/bulan.</p>
+      <p>Belum termasuk pos atau caj pemasangan. Tablet atau telefon untuk skrin kru disediakan oleh kedai. Pelanggan bayar di kaunter seperti biasa.</p>
     </div>
   </div>
 </section>
@@ -427,33 +420,47 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space
     </div>
     <form class="calc" id="calc" aria-label="Kira jumlah mula">
       <label class="field" for="c-plan">Pelan
-        <select id="c-plan"><option value="Smart">Smart · RM89/bulan</option><option value="Lite">Lite · RM50/bulan</option></select>
+        <select id="c-plan"><option value="Smart">Smart · RM69/bulan</option><option value="Lite">Lite · RM29/bulan</option></select>
       </label>
       <label class="field" for="c-tables">Bilangan meja<input id="c-tables" type="number" min="1" max="200" value="10"></label>
       <label class="field" for="c-way">Cara terima
         <select id="c-way"><option value="pos">Pos</option><option value="pasang">Pemasangan (Kota Bharu)</option></select>
       </label>
       <div class="btns"><button class="btn btn-green" type="submit" id="c-go">Bayar &amp; pos</button></div>
-      <p class="total" aria-live="polite"><span>Jumlah mula</span><b id="c-total">RM289</b><span id="c-detail"></span></p>
+      <p class="total" aria-live="polite"><span>Jumlah mula</span><b id="c-total">RM119</b><span id="c-detail"></span></p>
     </form>
+  </div>
+</section>
+
+<section id="pos" aria-labelledby="pos-h" style="background:var(--navy);color:#fff">
+  <div class="wrap report">
+    <div>
+      <p class="eyebrow" style="color:#7fe0b5">Dah ada POS?</p>
+      <h2 id="pos-h" style="margin-top:12px;color:#fff">Bina Menu bukan POS kedua</h2>
+      <p class="lead" style="margin-top:16px;color:#c4cfe4">Bina Menu hanya hantar slip pesanan ikut nombor meja ke skrin kru. Tiada kira duit, tiada jualan, tiada stok. Kaunter dan POS anda kekal seperti biasa.</p>
+    </div>
+    <ul style="display:grid;gap:12px;padding:0;list-style:none;margin:0">
+      <li style="background:var(--navy-2);border-radius:14px;padding:16px"><b>Pesanan masuk</b><br><span style="color:#c4cfe4">Kru nampak meja, item dan catatan seperti "kurang manis".</span></li>
+      <li style="background:var(--navy-2);border-radius:14px;padding:16px"><b>Kru uruskan seperti biasa</b><br><span style="color:#c4cfe4">Masukkan ke POS atau terus ke dapur, kemudian tekan Selesai.</span></li>
+      <li style="background:var(--navy-2);border-radius:14px;padding:16px"><b>Bayaran di kaunter</b><br><span style="color:#c4cfe4">Resit dan jualan kekal dalam sistem anda sekarang.</span></li>
+    </ul>
   </div>
 </section>
 
 <section aria-labelledby="lap-h">
   <div class="wrap report">
     <div>
-      <p class="eyebrow">Laporan mingguan (Smart)</p>
+      <p class="eyebrow">Laporan penggunaan (Smart)</p>
       <h2 id="lap-h" style="margin-top:12px">Tahu apa yang berlaku di kedai, terus dalam WhatsApp</h2>
-      <p class="lead" style="margin-top:16px">Setiap minggu owner dapat ringkasan: jumlah pesanan, item paling laris, waktu paling sibuk, dan purata masa sampai pesanan siap.</p>
+      <p class="lead" style="margin-top:16px">Setiap minggu owner nampak berapa pesanan masuk melalui Bina Menu, item paling banyak dipesan dan waktu paling sibuk. Angka jualan kekal dalam POS anda.</p>
     </div>
     <div class="wa" aria-label="Contoh laporan mingguan">
       <div class="bubble">
         <b>Laporan Bina Menu · Kafe Anda</b><br>
         10–16 Nov<br><br>
         🧾 Pesanan: <b>412</b> (minggu lepas 365)<br>
-        💵 Jualan melalui Bina Menu: <b>RM6,830</b><br>
         📱 Dari pelanggan 61% · pelayan 39%<br>
-        ⏱️ Purata siap: <b>8.5 minit</b><br>
+        📝 Dengan pilihan/catatan: <b>188</b><br>
         🔥 Paling sibuk: Sabtu, 8–9 malam<br>
         🏆 Teh Tarik (186), Nasi Lemak Ayam (94)
         <span class="t">Contoh · 9:00 pagi</span>
@@ -469,12 +476,13 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space
     <div class="faq">
       <details><summary>Pelanggan perlu muat turun app?</summary><p>Tidak. Menu terbuka terus di pelayar telefon selepas tap atau imbas.</p></details>
       <details><summary>Semua telefon boleh tap sticker?</summary><p>Kebanyakan telefon Android dan iPhone XR ke atas boleh membaca NFC. Telefon lain boleh imbas QR pada sticker yang sama.</p></details>
+      <details><summary>Kedai saya dah ada POS. Nanti serabut tak?</summary><p>Tidak. Bina Menu tidak mengira duit atau merekod jualan. Ia hanya tunjuk pesanan ikut nombor meja di skrin kru; kru masukkan ke POS seperti biasa. Untuk kedai yang mahu menu digital sahaja, pilih Lite.</p></details>
       <details><summary>Kedai perlu beli peralatan khas?</summary><p>Tidak. Skrin kru dibuka pada tablet atau telefon yang kedai sudah ada.</p></details>
       <details><summary>Pelanggan saya lebih suka panggil pelayan. Masih berguna?</summary><p>Ya. Dengan mod pelayan dalam pelan Smart, kru ambil order guna telefon dan pesanan tetap masuk ke skrin kru ikut nombor meja.</p></details>
       <details><summary>Siapa yang isi menu?</summary><p>Staf kedai, melalui halaman admin yang mudah. Harga, gambar dan item habis boleh dikemas kini bila-bila masa.</p></details>
       <details><summary>Boleh pasangkan untuk saya?</summary><p>Boleh, untuk kedai di sekitar Kota Bharu. Caj pemasangan ikut jarak; hubungi kami melalui WhatsApp untuk sebut harga. Di luar Kota Bharu, kit dipos bersama video panduan.</p></details>
       <details><summary>Pelanggan bayar macam mana?</summary><p>Di kaunter seperti biasa. Bina Menu belum menerima bayaran dalam talian.</p></details>
-      <details><summary>Boleh naik taraf dari Lite ke Smart?</summary><p>Boleh. Sticker yang sama terus digunakan, tak perlu tukar kit.</p></details>
+      <details><summary>Boleh naik taraf dari Lite ke Smart?</summary><p>Boleh. Sticker yang sama terus digunakan, tak perlu tukar sticker.</p></details>
       <details><summary>Meja saya besi atau kaca. Boleh guna?</summary><p>Tag NFC biasa kurang berkesan di atas permukaan besi. Beritahu kami jenis meja anda sebelum tempah supaya kami boleh cadangkan cara pemasangan yang sesuai.</p></details>
     </div>
   </div>
@@ -500,7 +508,7 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space
         <label class="field" for="f-tables">Bilangan meja<input id="f-tables" type="number" min="1" max="200" value="12"></label>
       </div>
       <label class="field" for="f-plan">Pelan diminati
-        <select id="f-plan"><option>Smart</option><option>Lite</option><option>Pro</option><option>Belum pasti</option></select>
+        <select id="f-plan"><option>Smart</option><option>Lite</option><option>Belum pasti</option></select>
       </label>
       <button class="btn btn-green" type="submit">Hantar melalui WhatsApp</button>
       <p class="note" id="lead-note">Butang ini membuka WhatsApp dengan mesej yang sudah diisi.</p>
@@ -517,74 +525,26 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space
 const WHATSAPP_NUMBER = "";
 // TETAPAN: Stripe Payment Link bagi setiap pelan (langganan + kit). Kosong = hantar ke WhatsApp.
 const STRIPE_LINKS = { Lite: "", Smart: "" };
-const PRICE = { Lite: 50, Smart: 89 }, SET = 20, MIN_SETS = 4;
+const PRICE = { Lite: 29, Smart: 69 }, SET = 5, MIN_SETS = 1;
 const wa = (msg) => WHATSAPP_NUMBER ? `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}` : "";
 
-// ---------- Pereka sticker ----------
-const COLORS = ["#0f2347", "#12a36b", "#c2410c", "#b91c1c", "#7c3aed", "#0e7490", "#1c1917", "#b8862f"];
-let color = COLORS[0], logo = null;
+// ---------- Corak QR contoh pada pratonton sticker (bukan QR sebenar) ----------
 const $ = (id) => document.getElementById(id);
-const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-
-// Corak QR contoh (bukan QR sebenar)
-function fakeQr(x, y, size) {
-  const n = 21, c = size / n; let d = "", seed = 7;
+(function sampleQr() {
+  const n = 21, size = 220, c = size / n, x0 = 578, y0 = 64; let d = "", seed = 7;
   const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
   const finder = (r, k) => r >= 0 && r < 7 && k >= 0 && k < 7;
   for (let r = 0; r < n; r++) for (let k = 0; k < n; k++) {
-    let on;
     const f = [[r, k], [r, k - 14], [r - 14, k]].find(([a, b]) => finder(a, b));
+    let on;
     if (f) { const [a, b] = f; on = a === 0 || a === 6 || b === 0 || b === 6 || (a >= 2 && a <= 4 && b >= 2 && b <= 4); }
     else if ((r < 8 && (k < 8 || k > 12)) || (r > 12 && k < 8)) on = false;
     else on = rnd() > .5;
-    if (on) d += `M${(x + k * c).toFixed(2)} ${(y + r * c).toFixed(2)}h${c.toFixed(2)}v${c.toFixed(2)}h-${c.toFixed(2)}z`;
+    if (on) d += `M${(x0 + k * c).toFixed(1)} ${(y0 + r * c).toFixed(1)}h${c.toFixed(1)}v${c.toFixed(1)}h-${c.toFixed(1)}z`;
   }
-  return `<path d="${d}" fill="#0f1b33"/>`;
-}
+  document.getElementById("qr-sample").innerHTML = `<path d="${d}"/>`;
+})();
 
-function drawSticker() {
-  const name = $("s-name").value.trim() || "Kafe Anda";
-  const text = $("s-text").value;
-  const table = String(Math.max(1, Math.min(99, parseInt($("s-table").value, 10) || 1))).padStart(2, "0");
-  const titleSize = Math.min(19, 230 / (name.length * .62));
-  const top = logo
-    ? `<clipPath id="lc"><circle cx="150" cy="62" r="20"/></clipPath><circle cx="150" cy="62" r="21" fill="#fff" stroke="${color}" stroke-width="1.5"/><image href="${logo}" x="130" y="42" width="40" height="40" clip-path="url(#lc)" preserveAspectRatio="xMidYMid slice"/>`
-    : `<circle cx="150" cy="62" r="20" fill="${color}"/><text x="150" y="70" text-anchor="middle" font-size="21" font-weight="800" fill="#fff">${esc(name[0].toUpperCase())}</text>`;
-  $("sticker-svg").innerHTML = `
-    <g font-family="Plus Jakarta Sans, Arial, sans-serif">
-      <circle cx="150" cy="150" r="148" fill="${color}"/>
-      <circle cx="150" cy="150" r="134" fill="#fff"/>
-      ${top}
-      <text x="150" y="${100 + titleSize * .2}" text-anchor="middle" font-size="${titleSize.toFixed(1)}" font-weight="800" fill="${color}">${esc(name.toUpperCase())}</text>
-      <g transform="translate(150 125)">
-        <g fill="none" stroke="#0f1b33" stroke-width="2" stroke-linecap="round" transform="translate(-${text.length * 2.95 + 12} -1)">
-          <path d="M0 -4a5 5 0 0 1 0 8"/><path d="M3.5 -7.5a9.5 9.5 0 0 1 0 15"/>
-        </g>
-        <text x="4" y="4" text-anchor="middle" font-size="9.5" font-weight="800" fill="#0f1b33" letter-spacing=".4">${esc(text)}</text>
-      </g>
-      <rect x="107" y="140" width="86" height="86" rx="8" fill="#fff" stroke="#e2e8f0"/>
-      ${fakeQr(112, 145, 76)}
-      <rect x="112" y="238" width="76" height="24" rx="12" fill="${color}"/>
-      <text x="150" y="255" text-anchor="middle" font-size="13" font-weight="800" fill="#fff" letter-spacing="1">MEJA ${table}</text>
-    </g>`;
-}
-
-$("swatches").innerHTML = COLORS.map((c, i) => `<button type="button" aria-label="Warna ${c}" aria-pressed="${i === 0}" data-c="${c}" style="background:${c}"></button>`).join("");
-$("swatches").addEventListener("click", (e) => {
-  const b = e.target.closest("button"); if (!b) return;
-  color = b.dataset.c;
-  $("swatches").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", x === b));
-  drawSticker();
-});
-["s-name", "s-text", "s-table"].forEach((id) => $(id).addEventListener("input", drawSticker));
-$("s-logo").addEventListener("change", (e) => {
-  const f = e.target.files[0]; if (!f) { logo = null; drawSticker(); return; }
-  const r = new FileReader(); r.onload = () => { logo = r.result; drawSticker(); }; r.readAsDataURL(f);
-});
-$("designer").addEventListener("submit", (e) => e.preventDefault());
-drawSticker();
-
-// ---------- Borang demo → WhatsApp ----------
 // ---------- Kalkulator jumlah mula ----------
 function calc() {
   const plan = $("c-plan").value, way = $("c-way").value;
@@ -592,7 +552,7 @@ function calc() {
   const sets = Math.max(MIN_SETS, tables);
   const total = PRICE[plan] + sets * SET;
   $("c-total").textContent = "RM" + total;
-  $("c-detail").textContent = `RM${PRICE[plan]} bulan pertama + ${sets} set × RM${SET}` + (way === "pos" ? " · pos dikira semasa bayar" : " · caj pemasangan ikut jarak") + ` · kemudian RM${PRICE[plan]}/bulan`;
+  $("c-detail").textContent = `RM${PRICE[plan]} bulan pertama + ${sets} sticker × RM${SET}` + (way === "pos" ? " · pos dikira semasa bayar" : " · caj pemasangan ikut jarak") + ` · kemudian RM${PRICE[plan]}/bulan`;
   $("c-go").textContent = way === "pos" ? "Bayar & pos" : "Minta sebut harga pemasangan";
   return { plan, way, tables, sets, total };
 }
@@ -603,7 +563,7 @@ $("calc").addEventListener("submit", (e) => {
   const c = calc();
   if (c.way === "pos" && STRIPE_LINKS[c.plan]) { window.location.href = STRIPE_LINKS[c.plan]; return; }
   const link = wa([c.way === "pos" ? "Salam, saya nak langgan Bina Menu (pos)." : "Salam, saya nak minta sebut harga pemasangan Bina Menu di Kota Bharu.",
-    `Pelan: ${c.plan}`, `Bilangan meja: ${c.tables} (${c.sets} set)`, `Jumlah mula: RM${c.total}`].join("\n"));
+    `Pelan: ${c.plan}`, `Bilangan meja: ${c.tables} (${c.sets} sticker)`, `Jumlah mula: RM${c.total}`].join("\n"));
   if (link) window.location.href = link; else $("c-detail").textContent = "Nombor WhatsApp belum ditetapkan pada laman ini.";
 });
 

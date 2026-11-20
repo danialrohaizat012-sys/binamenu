@@ -1,89 +1,71 @@
 import QRCode from "qrcode";
 
-// Sticker bulat 3 inci (76.2mm). Semua ukuran dalam milimeter.
-export const STICKER_MM = 76.2;
+// Sticker meja default Bina Menu: saiz kad bank (CR80), melintang. Tag NFC ditampal di belakang.
+// Design sama untuk semua outlet supaya mudah dicetak pukal; hanya nama kedai, QR dan nombor meja berbeza.
+export const STICKER_W = 85.6;
+export const STICKER_H = 54;
 export const BLEED_MM = 3;
+
+const NAVY = "#0f2347";
+const GREEN = "#12a36b";
 
 type StickerOptions = {
   name: string;
   url: string;
   table?: string | null;
-  color: string;
-  // true: fail untuk kedai cetak (ada bleed 3mm). false: saiz sebenar untuk cetak sendiri.
+  // true: fail untuk kedai cetak (bleed 3mm). false: saiz sebenar dengan garis potong untuk cetak sendiri.
   bleed?: boolean;
 };
 
 const esc = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
-// Anggaran lebar teks Arial Bold, untuk muatkan nama kedai yang panjang
-const textWidth = (text: string, size: number) => text.length * size * 0.7;
-
 function qrPath(url: string, x: number, y: number, size: number) {
   const qr = QRCode.create(url, { errorCorrectionLevel: "M" });
   const n = qr.modules.size;
   const cell = size / n;
   let d = "";
-  for (let r = 0; r < n; r++) {
-    for (let c = 0; c < n; c++) {
+  for (let r = 0; r < n; r++)
+    for (let c = 0; c < n; c++)
       if (qr.modules.get(r, c)) d += `M${(x + c * cell).toFixed(3)} ${(y + r * cell).toFixed(3)}h${cell.toFixed(3)}v${cell.toFixed(3)}h-${cell.toFixed(3)}z`;
-    }
-  }
   return d;
 }
 
-// Ikon gelombang contactless, berpusat pada (x, y)
-function nfcIcon(x: number, y: number, color: string) {
-  const arcs = [1.1, 2.1, 3.1]
-    .map((r) => `<path d="M${x - 1.2 + r * 0.35} ${y - r} a${r} ${r} 0 0 1 0 ${r * 2}" />`)
-    .join("");
-  return `<g fill="none" stroke="${color}" stroke-width="0.55" stroke-linecap="round">${arcs}</g>`;
-}
+export function stickerSvg({ name, url, table, bleed = true }: StickerOptions) {
+  const b = BLEED_MM;
+  const W = STICKER_W + b * 2;
+  const H = STICKER_H + b * 2;
+  const shop = name.trim().toUpperCase() || "MENU";
+  const shopSize = Math.min(2.6, 40 / (shop.length * 0.8)); // muat dalam panel kiri (~40mm)
+  const label = table ? `MEJA ${table}` : "MENU";
 
-export function stickerSvg({ name, url, table, color, bleed = true }: StickerOptions) {
-  const full = STICKER_MM + BLEED_MM * 2;
-  const c = full / 2;
-  const R = STICKER_MM / 2;
-  const inner = R - 3.6; // bulatan putih dalam; cincin warna 3.6mm di tepi
-  const dark = "#1c1917";
+  // Panel QR di kanan (hijau sampai ke tepi bleed)
+  const panelX = b + 52;
+  const qrSize = 24;
+  const qrX = panelX + (STICKER_W - 52 - qrSize) / 2;
+  const qrY = b + 7;
 
-  const title = name.trim().toUpperCase() || "MENU";
-  const titleSize = Math.min(3.6, 36 / (title.length * 0.7));
+  const viewBox = bleed ? `0 0 ${W} ${H}` : `${b - 0.5} ${b - 0.5} ${STICKER_W + 1} ${STICKER_H + 1}`;
+  const w = bleed ? W : STICKER_W + 1;
+  const h = bleed ? H : STICKER_H + 1;
 
-  const tapText = "TAP UNTUK MENU";
-  const tapSize = 4;
-  const tapX = c + 2.6; // ruang untuk ikon di kiri
-  const iconX = tapX - textWidth(tapText, tapSize) / 2 - 2.6;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}mm" height="${h}mm" viewBox="${viewBox}">
+  <g font-family="Arial, Helvetica, sans-serif" font-weight="700">
+    <rect width="${W}" height="${H}" fill="${NAVY}"/>
+    <rect x="${panelX}" y="0" width="${W - panelX}" height="${H}" fill="${GREEN}"/>
+    <rect x="${qrX - 1.6}" y="${qrY - 1.6}" width="${qrSize + 3.2}" height="${qrSize + 3.2}" rx="2" fill="#fff"/>
+    <path d="${qrPath(url, qrX, qrY, qrSize)}" fill="${NAVY}"/>
+    <rect x="${panelX + 5}" y="${b + 37}" width="${STICKER_W - 52 - 10}" height="7.5" rx="3.75" fill="#fff"/>
+    <text x="${panelX + (STICKER_W - 52) / 2}" y="${b + 42.4}" text-anchor="middle" font-size="4" fill="${NAVY}" letter-spacing="0.3">${esc(label)}</text>
 
-  const qrSize = 25;
-  const qrX = c - qrSize / 2;
-  const qrY = c - 13.2;
-
-  const pillLabel = table ? `MEJA ${table}` : "MENU DIGITAL";
-  const pillSize = table ? 3.6 : 2.8;
-  const pillW = textWidth(pillLabel, pillSize) + 7;
-  const pillY = c + 18.2;
-
-  // Tanpa bleed: beri ruang 0.5mm supaya garis potong bulat tidak terpotong di tepi
-  const pad = BLEED_MM - 0.5;
-  const viewBox = bleed ? `0 0 ${full} ${full}` : `${pad} ${pad} ${STICKER_MM + 1} ${STICKER_MM + 1}`;
-  const size = bleed ? full : STICKER_MM + 1;
-  // Id ikut geometri, supaya banyak sticker dalam satu halaman tidak bercanggah
-  const clipId = bleed ? "sticker-cut-bleed" : "sticker-cut";
-
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}mm" height="${size}mm" viewBox="${viewBox}">
-  <defs><clipPath id="${clipId}"><circle cx="${c}" cy="${c}" r="${bleed ? c : R}" /></clipPath></defs>
-  <g clip-path="url(#${clipId})" font-family="Arial, Helvetica, sans-serif" font-weight="700" text-anchor="middle">
-    <rect width="${full}" height="${full}" fill="${color}" />
-    <circle cx="${c}" cy="${c}" r="${inner}" fill="#ffffff" />
-    <text x="${c}" y="${c - 22.6}" font-size="${titleSize.toFixed(2)}" fill="${color}" letter-spacing="0.25">${esc(title)}</text>
-    ${nfcIcon(iconX, c - 16.9, dark)}
-    <text x="${tapX}" y="${c - 15.5}" font-size="${tapSize}" fill="${dark}">${tapText}</text>
-    <path d="${qrPath(url, qrX, qrY, qrSize)}" fill="${dark}" />
-    <text x="${c}" y="${c + 15.4}" font-size="2.3" font-weight="400" fill="#57534e">Tap telefon di sini atau imbas QR</text>
-    <rect x="${c - pillW / 2}" y="${pillY}" width="${pillW}" height="${pillSize + 2.6}" rx="${(pillSize + 2.6) / 2}" fill="${color}" />
-    <text x="${c}" y="${pillY + pillSize + 0.75}" font-size="${pillSize}" fill="#ffffff" letter-spacing="0.3">${esc(pillLabel)}</text>
+    <text x="${b + 6}" y="${b + 9}" font-size="${shopSize.toFixed(2)}" fill="#9fb3d9" letter-spacing="0.3">${esc(shop)}</text>
+    <g fill="none" stroke="#fff" stroke-width="0.9" stroke-linecap="round">
+      <path d="M${b + 7} ${b + 17}a3 3 0 0 1 0 6"/><path d="M${b + 9.5} ${b + 14.5}a6.5 6.5 0 0 1 0 11"/><path d="M${b + 12} ${b + 12}a10 10 0 0 1 0 16"/>
+    </g>
+    <text x="${b + 6}" y="${b + 36}" font-size="7.2" fill="#fff">Tap atau</text>
+    <text x="${b + 6}" y="${b + 43.5}" font-size="7.2" fill="${GREEN}">imbas</text>
+    <text x="${b + 6}" y="${b + 49}" font-size="2.6" font-weight="400" fill="#c4cfe4">untuk lihat menu · Bina Menu</text>
   </g>
-  ${bleed ? "" : `<circle cx="${c}" cy="${c}" r="${R}" fill="none" stroke="#a8a29e" stroke-width="0.15" stroke-dasharray="1 0.8" />`}
+  ${bleed ? "" : `<rect x="${b}" y="${b}" width="${STICKER_W}" height="${STICKER_H}" rx="3.2" fill="none" stroke="#a8a29e" stroke-width="0.15" stroke-dasharray="1 0.8"/>`}
 </svg>`;
 }

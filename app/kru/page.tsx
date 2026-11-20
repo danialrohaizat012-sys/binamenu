@@ -6,12 +6,13 @@ import type { Order } from "@/lib/types";
 export const dynamic = "force-dynamic";
 
 export default async function CrewPage() {
-  const { supabase, role } = await requireStaff();
-  if (!role) return null;
+  const { supabase, outlet } = await requireStaff();
+  if (!outlet || outlet.plan !== "smart") return null;
   const { data, error } = await supabase
     .from("orders")
     .select("*, order_items(*)")
+    .eq("outlet_id", outlet.id)
     .gte("created_at", startOfTodayMyt().toISOString())
     .order("created_at");
-  return <CrewBoard initial={(data ?? []) as Order[]} loadError={error?.message ?? null} />;
+  return <CrewBoard key={outlet.id} outletId={outlet.id} initial={(data ?? []) as Order[]} loadError={error?.message ?? null} />;
 }

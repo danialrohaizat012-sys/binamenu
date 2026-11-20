@@ -8,8 +8,8 @@ Satu halaman statik (HTML + CSS + sedikit JavaScript). Tiada build, tiada pakej.
    Borang demo dan semua butang "Tempah demo" menghantar pelanggan ke WhatsApp ini.
 2. Isi `STRIPE_LINKS` (Lite dan Smart) dengan Stripe Payment Link. Selagi kosong, butang
    "Bayar & pos" menghantar pelanggan ke WhatsApp. Cadangan tetapan setiap Payment Link:
-   - Item 1: langganan bulanan pelan (RM50 Lite / RM89 Smart).
-   - Item 2: "Set sticker NFC" RM20 sekali bayar, **kuantiti boleh diubah** dengan minimum 4.
+   - Item 1: langganan bulanan pelan (RM29 Lite / RM69 Smart).
+   - Item 2: "Sticker meja NFC" RM5 sekali bayar, **kuantiti boleh diubah** (satu bagi setiap meja).
    - Hidupkan **kumpul alamat penghantaran** dan tambah kadar pos.
    - Tambah medan custom untuk nama kedai dan senarai meja.
    Sahkan dengan Stripe bahawa langganan dan item sekali bayar boleh digabung dalam satu Payment Link untuk akaun anda.

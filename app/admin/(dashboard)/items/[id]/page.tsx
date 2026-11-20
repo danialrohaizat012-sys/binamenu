@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import ItemForm from "@/components/ItemForm";
 import Notice from "@/components/Notice";
-import { createClient } from "@/lib/supabase/server";
+import { requireOwner } from "@/lib/staff";
 import type { Category, MenuItem } from "@/lib/types";
 
 export default async function EditItemPage({
@@ -13,10 +13,10 @@ export default async function EditItemPage({
 }) {
   const { id } = await params;
   const { error } = await searchParams;
-  const supabase = await createClient();
+  const { supabase, outlet } = await requireOwner();
   const [{ data: item }, { data: categories }] = await Promise.all([
-    supabase.from("menu_items").select("*").eq("id", id).maybeSingle(),
-    supabase.from("categories").select("*").order("sort_order").order("name"),
+    supabase.from("menu_items").select("*").eq("outlet_id", outlet.id).eq("id", id).maybeSingle(),
+    supabase.from("categories").select("*").eq("outlet_id", outlet.id).order("sort_order").order("name"),
   ]);
   if (!item) notFound();
   return (
